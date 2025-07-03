@@ -23,7 +23,7 @@ Hi, I'm Ruizhe Wang (王瑞哲), currently pursuing a joint Ph.D. program betwee
 
 My research interest are AI Infrastructure, Large Language Model (LLM) Pretraining, and Efficient AI System Designing. I enjoy building scalable models, exploring novel training methods, and solving challenging problems at the intersection of theory and practice. Currently, I work on developing high-performance machine learning infrastructure and advancing the capabilities of large language models.
 
-In my free time, I enjoy sharing knowledge, contributing to open-source projects, and staying curious about emerging technologies. For more info related to my research, please refer to my <a href='https://scholar.google.com/citations?user=gu_oKFIAAAAJ'>google scholar homepage</a> <a href='https://scholar.google.com/citations?user=gu_oKFIAAAAJ'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2FMr-Philo%2Fmr-philo.github.io@google-scholar-stats%2Fgs_data_shieldsio.json&labelColor=f6f6f6&color=9cf&style=flat&label=citations
+In my free time, I enjoy sharing knowledge, contributing to open-source projects, and staying curious about emerging technologies. For more info related to my research, please refer to my <a href='https://scholar.google.com/citations?user=gu_oKFIAAAAJ'>google scholar homepage</a> <a href='https://scholar.google.com/citations?user=gu_oKFIAAAAJ'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2FMr-Philo%2Fmr-philo.github.io@google-scholar-stats%2Fgs_data_shieldsio.json&labelColor=f6f6f6&color=9cf&style=flat&label=citations"></a>
 
 
 # 📖 Educations
