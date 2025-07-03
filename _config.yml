@@ -6,7 +6,7 @@
 # `jekyll serve`. If you change this file, please restart the server process.
 
 # Site Settings
-title                    : "Ruizhe Wang's Homepage"
+title                    : "Ruizhe Wang"
 description              : "Ph.D. Candidate"
 repository               : "Mr-Philo/Mr-Philo.github.io"
 google_scholar_stats_use_cdn : true
@@ -22,8 +22,8 @@ baidu_site_verification  :  # get baidu_site_verification from https://ziyuan.ba
 # Site Author
 author:
   name             : "Ruizhe Wang"
-  avatar           : "images/android-chrome-512x512.png"
-  bio              : "Ph.D. Candidate"
+  avatar           : "images/profile_512_512.jpg"
+  bio              : "USTC - MSRA Joint Ph.D. Candidate"
   location         : "Beijing, China"
   employer         :
   pubmed           : 
@@ -57,6 +57,7 @@ author:
   xing             :
   youtube          :
   wikipedia        :
+  zhihu            : "zhe-philosophy"
 
 
 # Reading Files
