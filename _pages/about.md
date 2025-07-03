@@ -36,6 +36,7 @@ In my free time, I enjoy sharing knowledge, contributing to open-source projects
 - *2022.02*: &nbsp;🎉🎉 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ornare aliquet ipsum, ac tempus justo dapibus sit amet. 
 - *2022.02*: &nbsp;🎉🎉 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ornare aliquet ipsum, ac tempus justo dapibus sit amet.  -->
 
+
 # 🦈 Blogs
 - (in Chinese) 🔥 [10,000-word analysis of FP4 training of large language models: Optimizing Large Language Model Training Using FP4 Quantization Paper Sharing](https://zhuanlan.zhihu.com/p/1910768186401466238)
 
