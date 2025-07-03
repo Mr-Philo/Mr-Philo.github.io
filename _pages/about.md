@@ -17,7 +17,7 @@ redirect_from:
 
 <span class='anchor' id='about-me'></span>
 
-Hi, I'm Ruizhe Wang (王瑞哲), currently pursuing a joint Ph.D. program between [University of Science and Technology and China (USTC)](https://en.ustc.edu.cn/) and [Microsoft Research Asia (MSRA)](https://www.microsoft.com/en-us/research/lab/microsoft-research-asia/), co-supervised by Professor [Zhengjun Zha (查正军)](http://en.auto.ustc.edu.cn/2021/0616/c26828a513174/page.htm) and Professor [Baining Guo (郭百宁)](https://www.microsoft.com/en-us/research/people/bainguo/). I received my Bachelor of Engineering degree in Electronic Information Engineering from the University of Science and Technology of China. I also collaborate with [Peng Cheng (程鹏)](https://cp5555.github.io/) and [Yeyun Gong (宫叶云)](https://www.microsoft.com/en-us/research/people/yegong/) from Microsoft Research Asia.
+Hi, I'm Ruizhe Wang (王瑞哲), currently pursuing a joint Ph.D. program between [University of Science and Technology and China (USTC)](https://en.ustc.edu.cn/) and [Microsoft Research Asia (MSRA)](https://www.microsoft.com/en-us/research/lab/microsoft-research-asia/), co-supervised by Professor [Zhengjun Zha (查正军)](http://en.auto.ustc.edu.cn/2021/0616/c26828a513174/page.htm) and Professor [Baining Guo (郭百宁)](https://www.microsoft.com/en-us/research/people/bainguo/). I received my Bachelor of Engineering degree in Electronic Information Engineering from University of Science and Technology of China. I also collaborate with [Peng Cheng (程鹏)](https://cp5555.github.io/) and [Yeyun Gong (宫叶云)](https://www.microsoft.com/en-us/research/people/yegong/) from Microsoft Research Asia.
 
 <!-- <img src='./images/microsoft_logo.svg' style="width: 4em;"> -->
 
