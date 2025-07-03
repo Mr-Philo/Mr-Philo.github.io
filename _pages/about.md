@@ -29,7 +29,7 @@ In my free time, I enjoy sharing knowledge, contributing to open-source projects
 # 📖 Educations
 - *2023.09 - now*, PhD Candidate, University of Science and Technology of China, Department of Automation 
 - *2019.09 - 2023.06*, Bachelor's Degree, University of Science and Technology of China, Department of Electronic Engineering and Information Science
-- *2016.09 - 2019.06*, Hefei No.fifty Middle School
+- *2016.09 - 2019.06*, Hefei No.8 Senior High School
 
 <!-- 
 # 🔥 News
