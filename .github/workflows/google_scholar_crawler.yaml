@@ -3,7 +3,7 @@ name: Get Citation Data
 on: 
  page_build: 
  schedule:
-  - cron:  '0 23 * * *'
+  - cron:  '13 2 */3 * * '
 
 jobs:
   build:
