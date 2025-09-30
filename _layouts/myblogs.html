@@ -98,16 +98,17 @@ layout: compress
       <!-- {% if page.share %}{% include social-share.html %}{% endif %} -->
 
       {% include post_pagination.html %}
-        </div>
+
+      <div style="text-align: right; padding: 20px 0;">
+        <a href="{{ '/' | relative_url }}" class="btn btn--primary" style="display: inline-block; margin: 0 auto;">🏠 Back Home</a>
+      </div>
+      
+    </div>
 
     {% if site.comments.provider and page.comments %}
       {% include comments.html %}
     {% endif %}
       </article>
-
-    <div style="text-align: right; padding: 20px 0;">
-      <a href="{{ '/' | relative_url }}" class="btn btn--primary" style="display: inline-block; margin: 0 auto;">🏠 Back Home</a>
-    </div>
 
   {% comment %}<!-- only show related on a post page when not disabled -->{% endcomment %}
   {% if page.id and page.related and site.related_posts.size > 0 %}
