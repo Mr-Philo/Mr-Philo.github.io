@@ -43,6 +43,7 @@ In my free time, I enjoy sharing knowledge, contributing to open-source projects
 
 - 🔥 [5,000 words Analysis of FP4 Quantization for Training Large Language Models](/posts/2025/07/analysis-fp4/)
 - 🔥 [A One-Stop Guide to Scaling Laws in LLM Quantization](/posts/2025/08/quantization-scaling-law/)
+- 🔥 [Megaton-LM Training Large Models Practical Guide: 0 - Preface](/posts/2025/10/megatron-exp-0/)
 
 
 # 📝 Publications 
