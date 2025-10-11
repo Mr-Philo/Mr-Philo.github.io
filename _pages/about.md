@@ -41,8 +41,8 @@ In my free time, I enjoy sharing knowledge, contributing to open-source projects
 
 > View full blogs page: [Blogs](/blog-posts/)
 
-- 🔥 [10,000-word analysis of FP4 training of large language models: Optimizing Large Language Model Training Using FP4 Quantization Paper Sharing](/posts/2025/07/analysis-fp4/) \| [Chinese version](https://zhuanlan.zhihu.com/p/1910768186401466238)
-- (in Chinese) 🔥 [A One-Stop Guide to Scaling Laws in Large Model Quantization](https://zhuanlan.zhihu.com/p/1934724931519743930)
+- 🔥 [5,000 words Analysis of FP4 Quantization for Training Large Language Models](/posts/2025/07/analysis-fp4/)
+- 🔥 [A One-Stop Guide to Scaling Laws in LLM Quantization](/posts/2025/08/quantization-scaling-law/)
 
 
 # 📝 Publications 

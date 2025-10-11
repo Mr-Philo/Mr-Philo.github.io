@@ -1,5 +1,5 @@
 ---
-title: 'In-Depth Analysis of FP4 Quantization for Training Large Language Models: Paper Review of “Optimizing Large Language Model Training Using FP4 Quantization'
+title: '5,000 words Analysis of FP4 Quantization for Training Large Language Models'
 date: 2025-07-04
 permalink: /posts/2025/07/analysis-fp4/
 tags:
@@ -7,9 +7,11 @@ tags:
   - Paper Interpretation
 ---
 
-![Blog Image](/images/fp4_frame_thin.png)
+![Blog Image](/images/publications/fp4_frame_thin.png)
 
 > This blog is also available in Chinese version: [https://zhuanlan.zhihu.com/p/1910768186401466238](https://zhuanlan.zhihu.com/p/1910768186401466238)
+
+**Detailed Paper Interpretation of "Optimizing Large Language Model Training Using FP4 Quantization"**
 
 Low-bit data formats are no stranger to most of us. Compared to the default floating-point format used in computers (FP32), lower-bit formats in AI—especially in large language model (LLM) training and inference—not only reduce memory consumption but can also accelerate computation when paired with specialized hardware. Moreover, with proper optimization algorithms or frameworks, these formats can maintain model accuracy.
 
