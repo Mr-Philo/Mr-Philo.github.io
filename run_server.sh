@@ -5,4 +5,8 @@
 # https://cloud.tencent.com/developer/ask/sof/107035739
 # https://www.soinside.com/question/2MKZUtCmdH7D5U4EceQPbS
 
+# for Windows installation, please refer to: https://www.cnblogs.com/pergrand/p/12875597.html
+
 bundle exec jekyll liveserve
+
+# On Windows, please try: bundle exec jekyll serve

@@ -49,7 +49,7 @@ In my free time, I enjoy sharing knowledge, contributing to open-source projects
 
 <!-- please make sure all paper images has 1200px width -->
 
-<div class='paper-box'><div class='paper-box-image'><div><div class="badge">ICML 2025</div><img src='images/fp4_frame_thin.png' alt="sym" width="100%"></div></div>
+<div class='paper-box'><div class='paper-box-image'><div><div class="badge">ICML 2025</div><img src='images/publications/fp4_frame_thin.png' alt="sym" width="100%"></div></div>
 <!-- <div class='paper-box'><div class='paper-box-image'><div><img src='images/fp4_frame_thin.png' alt="sym" width="450px" style="object-fit: contain;"></div></div> -->
 <div class='paper-box-text' markdown="1">
 
@@ -63,17 +63,40 @@ In my free time, I enjoy sharing knowledge, contributing to open-source projects
 </div>
 </div>
 
-<div class='paper-box'><div class='paper-box-image'><div><img src='images/fp8_frame_thin.png' alt="sym" width="100%"></div></div>
+<div class='paper-box'><div class='paper-box-image'><div><img src='images/publications/recycle-frame.png' alt="sym" width="100%"></div></div>
+<div class='paper-box-text' markdown="1">
+
+[Recycling Pretrained Checkpoints: Orthogonal Growth of Mixture-of-Experts for Efficient Large Language Model Pre-Training](https://arxiv.org/abs/2510.08008)
+
+**Ruizhe Wang**, Yucheng Ding, Xiao Liu, Yaoxiang Wang, Peng Cheng, Baining Guo, Zhengjun Zha, Yeyun Gong
+
+<!-- <a href="https://github.com/Azure/MS-AMP"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"></a>  -->
+</div>
+</div>
+
+<div class='paper-box'><div class='paper-box-image'><div><img src='images/publications/fp8_frame_thin.png' alt="sym" width="100%"></div></div>
 <!-- <div class='paper-box'><div class='paper-box-image'><div><img src='images/fp8_frame_thin.png' alt="sym" width="450px" style="object-fit: contain;"></div></div> -->
 <div class='paper-box-text' markdown="1">
 
 [FP8-LM: Training FP8 Large Language Models](https://arxiv.org/abs/2310.18313)
 
-Houwen Peng, Kan Wu, Yixuan Wei, Guoshuai Zhao, Yuxiang Yang, Ze Liu, Yifan Xiong, Ziyue Yang, Bolin Ni, Jingcheng Hu, Ruihang Li, Miaosen Zhang, Chen Li, Jia Ning, **Ruizhe Wang**, Zheng Zhang, Shuguang Liu, Joe Chau, Han Hu, Peng Cheng
+Houwen Peng\*, Kan Wu\*, Yixuan Wei\*, Guoshuai Zhao, Yuxiang Yang, Ze Liu, Yifan Xiong, Ziyue Yang, Bolin Ni, Jingcheng Hu, Ruihang Li, Miaosen Zhang, Chen Li, Jia Ning, **Ruizhe Wang**, Zheng Zhang, Shuguang Liu, Joe Chau, Han Hu, Peng Cheng
 
 <a href="https://github.com/Azure/MS-AMP"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"></a> 
 </div>
 </div>
+
+<div class='paper-box'><div class='paper-box-image'><div><img src='images/publications/Matryoshka-frame.png' alt="sym" width="100%"></div></div>
+<div class='paper-box-text' markdown="1">
+
+[Training Matryoshka Mixture-of-Experts for Elastic Inference-Time Expert Utilization](https://arxiv.org/abs/2509.26520)
+
+Yaoxiang Wang, Qingguo Hu, Yucheng Ding, **Ruizhe Wang**, Yeyun Gong, Jian Jiao, Yelong Shen, Peng Cheng, Jinsong Su
+
+<!-- <a href="https://github.com/Azure/MS-AMP"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"></a>  -->
+</div>
+</div>
+
 
 # 🏆 Honors and Awards
 - *2023.06* : Outstanding graduates of USTC.
