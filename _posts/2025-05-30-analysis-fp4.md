@@ -1,7 +1,7 @@
 ---
 title: '5,000 words Analysis of FP4 Quantization for Training Large Language Models'
-date: 2025-07-04
-permalink: /posts/2025/07/analysis-fp4/
+date: 2025-05-30
+permalink: /posts/2025/05/analysis-fp4/
 tags:
   - Quantization
   - Paper Interpretation

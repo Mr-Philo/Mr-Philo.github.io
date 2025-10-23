@@ -1,6 +1,6 @@
 ---
 title: 'Megaton-LM Training Large Models Practical Guide | 0 - Preface'
-date: 2025-08-03
+date: 2025-10-10
 permalink: /posts/2025/10/megatron-exp-0/
 tags:
   - Megatron-LM
