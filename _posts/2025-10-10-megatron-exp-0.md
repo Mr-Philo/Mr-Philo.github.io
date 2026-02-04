@@ -5,6 +5,9 @@ permalink: /posts/2025/10/megatron-exp-0/
 tags:
   - Megatron-LM
   - Practical Guide
+header:
+  teaser: /images/posts/2025-10-10-megatron-exp-0/parallelism-deepspeed-3d.png
+excerpt: "Why we must use Megatron-LM for large model training, and some warnings for those who have never used it before. A practical guide from personal experience."
 ---
 
 ![Blog Image](/images/posts/2025-10-10-megatron-exp-0/parallelism-deepspeed-3d.png)

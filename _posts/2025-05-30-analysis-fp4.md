@@ -5,6 +5,9 @@ permalink: /posts/2025/05/analysis-fp4/
 tags:
   - Quantization
   - Paper Interpretation
+header:
+  teaser: /images/publications/fp4_frame_thin.png
+excerpt: "Detailed Paper Interpretation of 'Optimizing Large Language Model Training Using FP4 Quantization'. This post walks you through the motivation, key insights, and design rationale behind our work."
 ---
 
 ![Blog Image](/images/publications/fp4_frame_thin.png)

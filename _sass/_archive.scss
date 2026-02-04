@@ -27,6 +27,14 @@
   }
 }
 
+/* Blog cards layout - use full available width */
+.archive--blog-cards {
+  @include breakpoint($large) {
+    @include span(12 of 12);
+    @include prefix(0);
+  }
+}
+
 .archive__subtitle {
   margin: 1.414em 0 0;
   padding-bottom: 0.5em;
@@ -104,6 +112,122 @@
 
   .page__meta {
     margin: 0 0 4px;
+  }
+}
+
+/* Blog cards layout - remove right padding to use full width */
+.archive--blog-cards .list__item {
+  padding-right: 0;
+}
+
+/*
+   Blog list view with teaser
+   ========================================================================== */
+
+.archive__item-row {
+  display: block;
+  margin-bottom: 1.5em;
+  padding: 1em;
+  background-color: mix(#fff, $background-color, 75%);
+  border-radius: $border-radius;
+  border: 1px solid $border-color;
+  transition: box-shadow 0.3s ease;
+  overflow: hidden;
+  @include clearfix;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(#000, 0.1);
+  }
+}
+
+.archive__item-teaser-wrapper {
+  width: 100%;
+  max-height: 200px;
+  overflow: hidden;
+  border-radius: $border-radius;
+  margin-bottom: 1em;
+
+  @include breakpoint($small) {
+    float: left;
+    width: 35%;
+    min-width: 180px;
+    max-width: 320px;
+    max-height: 160px;
+    margin-right: 1.5em;
+    margin-bottom: 0;
+  }
+
+  @include breakpoint($medium) {
+    width: 30%;
+    min-width: 200px;
+    max-width: 350px;
+    max-height: 180px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.02);
+  }
+}
+
+.archive__item-content {
+  overflow: hidden;
+
+  .archive__item-title {
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    font-size: $type-size-4;
+    line-height: 1.4;
+
+    a {
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .page__meta {
+    margin: 0 0 0.5em;
+    font-size: $type-size-6;
+    color: mix(#fff, $gray, 25%);
+
+    .page__date,
+    .page__read-time {
+      display: inline-block;
+      margin-right: 1em;
+    }
+  }
+
+  .archive__item-excerpt {
+    margin: 0 0 0.5em;
+    font-size: $type-size-6;
+    color: $gray;
+    line-height: 1.6;
+  }
+}
+
+.archive__item-tags {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+
+  .tag {
+    display: inline-block;
+    padding: 0.2em 0.6em;
+    font-size: $type-size-7;
+    background-color: mix(#fff, $primary-color, 80%);
+    color: $primary-color;
+    border-radius: 3px;
+    white-space: nowrap;
   }
 }
 

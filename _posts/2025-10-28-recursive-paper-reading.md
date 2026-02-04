@@ -5,6 +5,9 @@ permalink: /posts/2025/10/looped-1
 tags:
   - Recursive Transformers
   - Paper Interpretation
+header:
+  teaser: /images/posts/2025-10-28-recursive-paper-reading/recursive-cover.png
+excerpt: "Exploring how loops and recursion can improve parameter utilization efficiency in LLMs. A comprehensive summary of recursive mechanisms in Transformer architectures."
 ---
 
 ![Blog Image](/images/posts/2025-10-28-recursive-paper-reading/recursive-cover.png)

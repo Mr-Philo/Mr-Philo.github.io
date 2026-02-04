@@ -5,6 +5,9 @@ permalink: /posts/2025/08/quantization-scaling-law/
 tags:
   - Quantization
   - Paper Interpretation
+header:
+  teaser: /images/posts/2025-08-03-quantization-scaling-law/quantization-scaling-law.png
+excerpt: "A comprehensive overview of Quantization Scaling Laws. Dive deep into 5 papers to understand how performance loss from quantization varies with model parameters and token count."
 ---
 
 ![Blog Image](/images/posts/2025-08-03-quantization-scaling-law/quantization-scaling-law.png)
