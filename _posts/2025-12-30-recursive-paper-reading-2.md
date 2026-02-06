@@ -43,16 +43,18 @@ This paper is one of the earlier systematic studies of **Looped Transformers** o
 In the mainstream LLM community, a common way to boost reasoning is to stack more Transformer layers. But that comes with a large parameter footprint and heavy compute. This paper explores a more parameter-efficient architecture: take a relatively shallow Transformer (e.g., only k layers) and **repeat it L times**, forming a looped computation structure. The total parameter count stays the same, while the **effective depth** becomes k × L.
 
 ![](/images/posts/2025-12-30-recursive-paper-reading-2/recursive-2-paper-1-1.png)
+*Figure 1: Comparison of looped vs standard Transformer architectures with equivalent effective depth*
 
 The paper aims to answer a fundamental question: does this looped architecture really improve reasoning, and what mechanism explains it? The main takeaways can be summarized in three points.
 
 ### 1) Looped Transformers perform strongly on synthetic reasoning tasks
 
-The authors evaluate looped models on carefully designed synthetic reasoning tasks such as addition, p-hop induction, group composition, and basic mathematics. The results are clear: a k-layer Transformer looped L times can perform comparably to a standard (non-looped) Transformer with depth k × L.
+The authors evaluate looped models on carefully designed synthetic reasoning tasks such as addition, `p-hop induction`, group composition, and basic mathematics. The results are clear: **a k-layer Transformer looped L times can perform comparably to a standard (non-looped) Transformer with depth k × L**.
 
-This suggests that for multi-step reasoning, the number of **compute steps** (or “thinking rounds”) can be more important than simply having more parameters. By reusing the same parameters repeatedly, the loop simulates multi-layer information processing and improves reasoning without increasing parameter count. (Of course, these synthetic tasks are intentionally simplified—they mainly serve as a controlled testbed for multi-step reasoning.)
+This suggests that for multi-step reasoning, the number of **compute steps** (or "thinking rounds") can be more important than simply having more parameters. By reusing the same parameters repeatedly, the loop simulates multi-layer information processing and improves reasoning without increasing parameter count. (Of course, these synthetic tasks are intentionally simplified—they mainly serve as a controlled testbed for multi-step reasoning.)
 
 ![](/images/posts/2025-12-30-recursive-paper-reading-2/recursive-2-paper-1-2.png)
+*Figure 2: Performance comparison on synthetic reasoning tasks showing effective depth matters*
 
 ### 2) An implicit link to Chain-of-Thought (CoT)
 
@@ -61,6 +63,7 @@ The paper also studies the relationship between looped Transformers and Chain-of
 Concretely, when the model is looped L times, its internal hidden state is updated after each loop. These intermediate states can be viewed as **implicit CoT steps** occurring in latent space. The authors further argue that a model looped L times can, in principle, simulate an explicit L-step CoT process. This offers a latent-dynamics view for understanding multi-step reasoning: the model “thinks silently” inside its hidden states.
 
 ![](/images/posts/2025-12-30-recursive-paper-reading-2/recursive-2-paper-1-3.png)
+*Figure 3: Visualization of latent thought generation through recursive computation*
 
 ### 3) Inductive bias: better at reasoning, worse at memorization
 
@@ -77,7 +80,16 @@ Empirically, under the same total FLOPs budget, more looping often yields lower 
 
 ### Summary
 
-Overall, the paper provides both theory and experiments supporting the potential of looped Transformers. Its core message—**effective depth** is a key driver of reasoning—points to a direction for efficient reasoning model design. A limitation is that experiments are mostly at ~1B scale; whether latent reasoning via looping scales cleanly to much larger models still needs more evidence.
+> **Key Takeaway:** The paper demonstrates that **effective depth** (via looping) is a key driver of reasoning capability, offering a parameter-efficient alternative to simply stacking more layers.
+
+**Strengths:**
+- Strong theoretical foundation linking loops to implicit Chain-of-Thought
+- Clear empirical validation on synthetic reasoning tasks
+- Identifies important inductive bias: computation vs. storage trade-off
+
+**Limitations:**
+- Experiments mostly at **~1B scale**; scalability to larger models unclear
+- Synthetic tasks may not fully capture real-world reasoning complexity
 
 ---
 ## Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth Approach (ICML 2025 Workshop) ⭐
@@ -96,6 +108,7 @@ The model is composed of three parts:
 - **Coda** block: decodes the final latent state into next-token probabilities
 
 ![](/images/posts/2025-12-30-recursive-paper-reading-2/recursive-2-paper-2-1.png)
+*Figure 5: Three-part architecture—prelude, recurrent block, and coda—forming the latent reasoning pipeline*
 
 Given an input sequence `x` and a chosen recurrent iteration count `r`, the model conceptually does:
 
@@ -108,22 +121,27 @@ During training, the authors randomly sample the iteration count for each forwar
 
 ### 2) Large-scale training results
 
-The authors train a 3.5B-parameter model on ORNL Frontier with roughly 800B tokens. The layer layout is (2, 4, 2): 2-layer prelude, 4-layer recurrent block, 2-layer coda. The average iteration count is set to 32, which means the model can be “unrolled” to an effective depth of 132 layers at test time—deeper than many large fixed-depth Transformers.
+The authors train a **3.5B-parameter** model on ORNL Frontier with roughly **800B tokens**. The layer layout is `(2, 4, 2)`: 2-layer prelude, 4-layer recurrent block, 2-layer coda. The average iteration count is set to **32**, which means the model can be "unrolled" to an effective depth of **132 layers** at test time—deeper than many large fixed-depth Transformers.
 
-Training was not smooth: the paper reports two failed attempts that illustrate key challenges.
+Training was not smooth: the paper reports **two failed attempts** that illustrate key challenges:
 
-- Failure #1: hidden states quickly collapsed across the token dimension, producing identical representations.
-- Failure #2: the model learned to ignore the incoming recurrent state, so more test-time compute did not help.
+- **Failure #1:** hidden states quickly collapsed across the token dimension, producing identical representations
+- **Failure #2:** the model learned to ignore the incoming recurrent state, so more test-time compute did not help
 
 ![](/images/posts/2025-12-30-recursive-paper-reading-2/recursive-2-paper-2-2.png)
+*Figure 6: Training dynamics showing failures and eventual success with proper normalization*
 
-With carefully designed normalization, adapter mechanisms, and learning-rate tuning, they eventually obtained a model that can effectively utilize extra test-time compute. This again highlights the importance of the “sandwich” structure (prelude/recurrent/coda) for stability.
+With carefully designed normalization, adapter mechanisms, and learning-rate tuning, they eventually obtained a model that can effectively utilize extra test-time compute. This again highlights the importance of the **"sandwich" structure** (`prelude`/`recurrent`/`coda`) for stability.
 
-On benchmarks, increasing test-time iterations substantially improves reasoning performance. For example, on GSM8K, performance goes from near-zero at 1 iteration to 34.80% / 42.08% (strict / flexible matching) at 32 iterations—approaching the performance of much larger models.
+On benchmarks, increasing test-time iterations substantially improves reasoning performance. For example, on **GSM8K**, performance goes from **near-zero at 1 iteration** to **34.80% / 42.08%** (strict / flexible matching) at **32 iterations**—approaching the performance of much larger models.
 
-Different tasks saturate at different compute levels. Simpler tasks like HellaSwag saturate around 8 iterations, while harder math tasks like GSM8K continue benefiting from more iterations. Interestingly, with more few-shot context, the model automatically tends to “spend” more compute to process the extra information—suggesting a degree of dynamic depth allocation.
+Different tasks saturate at different compute levels:
+- Simpler tasks like **HellaSwag** saturate around **8 iterations**
+- Harder math tasks like **GSM8K** continue benefiting from more iterations
 
-The model is also competitive on code generation: at 3.5B scale it reaches 23.17 pass@1 on HumanEval, outperforming most open-source models of similar size (though still behind specialized code models such as StarCoder2).
+Interestingly, with more few-shot context, the model automatically tends to "spend" more compute to process the extra information—suggesting a degree of **dynamic depth allocation**.
+
+The model is also competitive on code generation: at 3.5B scale it reaches **23.17 pass@1** on `HumanEval`, outperforming most open-source models of similar size (though still behind specialized code models such as `StarCoder2`).
 
 ### 3) Visualizing latent-space computation
 
@@ -133,21 +151,30 @@ One of the most insightful parts of the paper is an exploration of how the laten
 - **Orbiting**: for tokens requiring complex reasoning (e.g., certain numbers in math problems), hidden states exhibit orbit-like trajectories (rotational patterns in PCA space). Similar orbiting can also appear on tokens that determine the structure of an answer.
 - **Sliders**: for some key tokens, the trajectory drifts consistently along a direction (“slider”), possibly supporting internal counting or evidence accumulation.
 
-These patterns are not directly hard-coded by a specific objective—they emerge naturally during large-scale training, suggesting that looped computation supports rich latent-space computation. A key finding is that compute allocation depends on context and token importance: difficult tokens tend to have more complex trajectories.
+These patterns are not directly hard-coded by a specific objective—they emerge naturally during large-scale training, suggesting that looped computation supports rich latent-space computation. A key finding is that **compute allocation depends on context and token importance**: difficult tokens tend to have more complex trajectories.
 
 ![](/images/posts/2025-12-30-recursive-paper-reading-2/recursive-2-paper-2-3.png)
+*Figure 7: Latent-space trajectories showing convergence, orbiting, and slider patterns for different token types*
 
 Even when trajectories look complicated, the model shows a form of **path independence**: starting from different initial hidden states, after enough recurrence steps it converges to similar orbit/fixed-point/drift behaviors. This is important for stability and predictability.
 
 ![](/images/posts/2025-12-30-recursive-paper-reading-2/recursive-2-paper-2-4.png)
+*Figure 8: Path independence demonstrated across different initialization points*
 
 ### Summary
 
-This work provides a parameter-efficient way to scale reasoning by scaling **how** the model computes, not how many parameters it has. It supports the idea that “thinking quality” depends not only on parameter count but also on compute usage in latent space.
+> **Key Takeaway:** This work demonstrates that **"thinking quality"** depends not only on parameter count but also on **how** the model uses compute in latent space—opening a new dimension for scaling reasoning.
 
-The paper also has limitations: training uses an aggressive data mix biased toward code and math, which may harm general language capabilities. The learning rate is constant without cooling; the authors partly mitigate this via weight averaging, but it may limit final performance. Training is done on AMD hardware, so some engineering choices may not transfer cleanly to NVIDIA-centric ecosystems.
+**Strengths:**
+- Successfully scales to **3.5B parameters** and **800B tokens** with recurrent depth
+- Remarkable latent-space trajectory analysis revealing emergent computation patterns
+- Shows **34.80%** accuracy on GSM8K (from near-zero), approaching larger models
+- Demonstrates dynamic compute allocation based on task difficulty
 
-Overall, this is an important exploration direction, and the latent-trajectory analysis is especially insightful.
+**Limitations:**
+- Aggressive data mix (biased toward code/math) may hurt general language tasks
+- Constant learning rate without cooling; performance may be sub-optimal
+- AMD-specific training; transferability to NVIDIA ecosystems unclear
 
 ---
 ## Encode, Think, Decode: Scaling Test-Time Reasoning with Recursive Latent Thoughts (ICLR 2026, in progress)
@@ -167,19 +194,26 @@ The key insight comes from interpretability studies suggesting that different la
 
 This is conceptually similar to the prelude/recurrent/coda architecture above, but the paper adds a **data-driven method** to identify where the “thinking block” should be placed. Using a method from Gromov et al. (2024), they measure changes in average angular distance between consecutive layers to detect functional transition points. When the rate of angular change shifts from fast to slow, that “turning point” defines the boundary of the encoder.
 
-With forward/backward analysis, they select a `7-4*k-5` configuration for OLMo-2 1B: 7 layers as encoder, 4 layers as recursive thinking block (repeated k times), and 5 layers as decoder.
+With forward/backward analysis, they select a **`7-4*k-5` configuration** for OLMo-2 1B: **7 layers** as encoder, **4 layers** as recursive thinking block (repeated k times), and **5 layers** as decoder.
 
 ![](/images/posts/2025-12-30-recursive-paper-reading-2/recursive-2-paper-3-1.png)
+*Figure 9: Data-driven layer role identification using angular distance analysis*
 
 ### 2) Experimental design and results
 
 The most practical aspect is that the authors do not train a new model from scratch. They integrate ETD into the **mid-training** phase of OLMo 2 (only about 1.25% of pretraining tokens). This makes the method applicable to existing open-source models without new data.
 
-They evaluate on 17 benchmarks across six categories of increasing reasoning intensity: factual knowledge (TriviaQA, NaturalQuestions), reading comprehension (BoolQ, OpenBookQA, DROP), commonsense (CommonSenseQA, HellaSwag, SocialQA, WinoGrande), multidisciplinary reasoning (ARC-Easy, ARC-Challenge, MMLU, MMLU-Pro, AGIEval-English), BIG-Bench Hard (BBH), and math (GSM8K, MATH).
+They evaluate on **17 benchmarks** across six categories of increasing reasoning intensity: factual knowledge (TriviaQA, NaturalQuestions), reading comprehension (BoolQ, OpenBookQA, DROP), commonsense (CommonSenseQA, HellaSwag, SocialQA, WinoGrande), multidisciplinary reasoning (ARC-Easy, ARC-Challenge, MMLU, MMLU-Pro, AGIEval-English), BIG-Bench Hard (BBH), and math (GSM8K, MATH).
 
-The main results show broad improvements as iteration count increases, especially on deep-reasoning tasks. For OLMo-2 1B, GSM8K and MATH see relative gains of +28.4% and +36%. Factual knowledge tasks improve little, supporting the hypothesis that recursion boosts reasoning more than memorization—consistent with the inductive-bias discussion in the first paper.
+The main results show broad improvements as iteration count increases, especially on deep-reasoning tasks:
+- **GSM8K:** **+28.4%** relative improvement
+- **MATH:** **+36%** relative improvement
+- **Factual knowledge tasks:** minimal improvement
+
+This supports the hypothesis that recursion boosts **reasoning** more than **memorization**—consistent with the inductive-bias discussion in the first paper.
 
 ![](/images/posts/2025-12-30-recursive-paper-reading-2/recursive-2-paper-3-2.png)
+*Figure 10: Performance gains across benchmarks with increasing recursion depth*
 
 They also compare recursion placement strategies. The `7-4*k-5` configuration performs best, outperforming naive schemes like recursing over the entire model or only the middle layers. This highlights the importance of accurately identifying the critical reasoning layers.
 
@@ -187,9 +221,19 @@ Finally, the paper proposes an **adaptive depth** strategy, allowing the model t
 
 ### Summary
 
-ETD represents a research paradigm: instead of scaling model size or context window, improve reasoning by using existing parameters more intelligently. It is particularly attractive for resource-constrained deployment.
+> **Key Takeaway:** ETD demonstrates that **selective layer recursion** (targeting specific "thinking" layers) can improve reasoning more efficiently than recursing the entire model.
 
-Current validation is mainly on OLMo 2 1B, and it is not yet tested on larger models or instruction-tuned models. The paper also notes that applying ETD to instruction models likely requires integration into post-training, which remains open. Another cost is that increasing iterations requires re-running the mid-training stage, which may be expensive at scale. Finally, although the method is empirically effective, the theoretical explanation for *why* particular middle layers are the best “thinking” layers remains limited—still something of a black box.
+**Strengths:**
+- **Data-driven layer identification** method—not hand-tuned
+- Applied to existing checkpoints via **mid-training** (only 1.25% of pretraining tokens)
+- Strong gains on reasoning: **+28.4%** (GSM8K), **+36%** (MATH)
+- Adaptive depth mechanism intelligently allocates compute per input
+
+**Limitations:**
+- Validated only on **OLMo 2 1B**; larger models untested
+- Not yet integrated into instruction-tuned or post-trained models
+- Increasing iterations requires costly mid-training re-runs
+- Limited theoretical explanation for *why* middle layers are optimal "thinking" zones
 
 ---
 ## Scaling Latent Reasoning via Looped Language Models (Technical report) ⭐
@@ -203,25 +247,37 @@ This report applies latent reasoning to large-scale training. A collaboration in
 
 Ouro applies the same set of Transformer layers repeatedly; each iteration refines hidden states in latent space—following the same looping paradigm.
 
-For early-exit behavior, the report proposes an entropy-regularized objective to prevent the model from collapsing into a fixed depth too early. In stage 1, they use KL regularization to a uniform prior over depths to encourage exploration. In stage 2, they optimize an adaptive exit policy based on realized performance improvements, further refining compute allocation.
+For early-exit behavior, the report proposes an **entropy-regularized objective** to prevent the model from collapsing into a fixed depth too early:
+- **Stage 1:** `KV-regularization` to uniform prior (encourage exploration)
+- **Stage 2:** Adaptive exit policy based on performance improvements
 
 ![](/images/posts/2025-12-30-recursive-paper-reading-2/recursive-2-paper-4-1.png)
+*Figure 11: Entropy regularization mechanism for dynamic depth allocation*
 
 ### 2) Large-scale training practice
 
-They train 1.4B and 2.6B parameter Ouro models over multiple phases: pre-training (6T tokens), continued training (1.4T), long-context training (20B), and mid-training (300B). Notably, they only introduce looping after stably training the 1.4B base for about 3T tokens—effectively “upcycling” it into a 2.6B looped model.
+They train **1.4B** and **2.6B** parameter Ouro models over multiple phases: pre-training (**6T tokens**), continued training (**1.4T**), long-context training (**20B**), and mid-training (**300B**). Notably, they only introduce looping after stably training the 1.4B base for about **3T tokens**—effectively "upcycling" it into a 2.6B looped model.
 
-For stability, they report several adjustments:
+For stability, they report several critical adjustments:
 
-- **Fewer recursion steps**: they started with k=8 but observed strong loss oscillations; they attribute this to amplified perturbations through repeated gradient flow, and reduce to k=4.
-- **Increasing batch size**: from 4M to 8M tokens, yielding more stable gradients.
-- **Tuning KL coefficient**: entropy-regularization coefficient beta reduced from 0.1 to 0.05 to reduce conflict between task loss and KL penalty.
+- **Fewer recursion steps:** k=8 → k=4 (to reduce loss oscillations from gradient amplification)
+- **Increasing batch size:** 4M → 8M tokens (for more stable gradients)
+- **Tuning KL coefficient:** β=0.1 → β=0.05 (to reduce task loss vs KL penalty conflict)
 
 ![](/images/posts/2025-12-30-recursive-paper-reading-2/recursive-2-paper-4-2.png)
+*Figure 12: Training dynamics and stability improvements through progressive adjustments*
 
-After an SFT stage, they obtain Ouro-1.4B-Thinking and Ouro-2.6B-Thinking. They also tried integrating LoopLM into RL, but existing RL training infrastructure is largely incompatible with dynamic-compute architectures—highlighting the need for new tooling.
+After an SFT stage, they obtain `Ouro-1.4B-Thinking` and `Ouro-2.6B-Thinking`. They also tried integrating LoopLM into RL, but existing RL training infrastructure is largely incompatible with dynamic-compute architectures—highlighting the need for new tooling.
 
-On benchmarks, Ouro shows strong parameter efficiency: 1.4B often matches 4B, and 2.6B often matches 8B—roughly a 2–3× parameter-efficiency gain, especially on reasoning-heavy tasks. For example, on GSM8K, Ouro-1.4B reaches 78.92% accuracy, outperforming Qwen3-4B (72.86%). On MATH500, Ouro-1.4B reaches 82.40% vs Qwen3-4B at 59.60%. On advanced reasoning benchmarks (AIME24/25, OlympiadBench, GPQA), 1.4B approaches 4B performance, while 2.6B matches or exceeds 8B.
+**Benchmark Results:** Ouro shows strong parameter efficiency—roughly **2–3× gains**:
+
+| Task | Ouro-1.4B | Baseline 4B | Ouro-2.6B | Baseline 8B |
+|------|-----------|-------------|-----------|-------------|
+| **GSM8K** | **78.92%** | 72.86% (Qwen3-4B) | - | - |
+| **MATH500** | **82.40%** | 59.60% (Qwen3-4B) | - | - |
+| **AIME24/25** | Approaches 4B | - | Matches/exceeds 8B | - |
+
+On advanced reasoning benchmarks (OlympiadBench, GPQA), **1.4B approaches 4B performance**, while **2.6B matches or exceeds 8B**.
 
 ### 3) Mechanism: why does LoopLM reason better?
 
@@ -239,15 +295,45 @@ Finally, they highlight system advantages: looped structures can support specula
 
 ### Summary
 
-Ouro demonstrates that looped latent reasoning can scale to extremely large training regimes. Its benefits show up not only in benchmark scores, but also in more trustworthy reasoning traces and improved safety properties.
+> **Key Takeaway:** Ouro successfully scales looped reasoning to **7.7 trillion tokens**, demonstrating that parameter-efficient latent reasoning can work at production scale with **2–3× efficiency gains**.
 
-That said, deployment still faces infrastructure challenges: RL attempts failing due to incompatibility is a strong signal that today’s LLM tooling is not ready for dynamic compute architectures. And while parameter efficiency is high, test-time compute cost is still non-trivial. The proposed KV-cache sharing strategy (keeping only the last-step cache) can reduce memory by ~4×, but prefill still needs full caching, which may be a deployment bottleneck.
+**Strengths:**
+- Largest-scale validation: **7.7T tokens**, 1.4B/2.6B models
+- **78.92%** on GSM8K with only 1.4B params (outperforms 4B baselines)
+- Improved safety, trustworthiness, and reasoning consistency
+- Demonstrates "upcycling" strategy: convert 1.4B → 2.6B via looping
+
+**Limitations:**
+- **Infrastructure incompatibility:** RL training frameworks don't support dynamic compute
+- Test-time compute cost non-trivial despite parameter efficiency
+- `KV-cache` sharing reduces memory **~4×**, but prefill still needs full caching
+- Requires new tooling for widespread adoption
 
 ---
-## Summary
+## Final Summary
 
-Looped-depth architectures and their variants (LoopLM, ETD, Ouro) open a new axis for scaling LLM capabilities. In a world where the dominant trend is “bigger models + more data”, these works show that **compute-path optimization** can also be effective.
+> **The Big Picture:** Looped-depth architectures (LoopLM, ETD, Ouro) open a **new axis** for scaling LLM capabilities—beyond just "bigger models + more data".
 
-Perhaps the most important takeaway is that reasoning performance depends not only on **what the model knows** (knowledge capacity), but also on **how it thinks** (knowledge operations). Looped computation strengthens the latter by enabling iterative refinement in latent space. This form of implicit thinking can be more efficient and arguably closer to how humans perform internal reasoning, providing a new paradigm for building the next generation of efficient, trustworthy, and safe language models.
+### Key Insights Across All Papers:
 
-In short: the future of LLMs should care not only about “larger scale”, but also about “smarter design”—increasing the richness of thinking under a fixed parameter budget.
+**1. Effective Depth > Parameter Count (for reasoning)**
+- Looping k layers L times achieves **k × L effective depth** at fixed parameter cost
+- Multi-step reasoning benefits more from "thinking rounds" than parameter storage
+
+**2. Knowledge Operations > Knowledge Capacity**
+- Performance depends on **how models think** (operations), not just **what they know** (storage)
+- Looped computation enables **iterative refinement in latent space**
+
+**3. Emergent Computation Patterns**
+- Latent trajectories show convergence, orbiting, and slider behaviors
+- Models learn to allocate compute dynamically based on token/task difficulty
+
+**4. Parameter Efficiency at Scale**
+- **2–3× efficiency gains** demonstrated (1.4B matching 4B, 2.6B matching 8B)
+- Successfully scaled to **7.7T tokens** (Ouro)
+
+### The Future Direction:
+
+> The future of LLMs should focus not only on **"larger scale"**, but also on **"smarter design"**—increasing the richness of thinking under a fixed parameter budget.
+
+This paradigm shift toward **compute-path optimization** offers a more efficient, trustworthy, and arguably more human-like approach to building reasoning systems. As infrastructure matures to support dynamic compute architectures, looped reasoning may become a standard tool in the LLM toolkit.

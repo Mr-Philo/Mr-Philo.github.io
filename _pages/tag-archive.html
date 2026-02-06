@@ -8,10 +8,289 @@ author_profile: true
 {% include base_path %}
 {% include group-by-array collection=site.posts field="tags" %}
 
-{% for tag in group_names %}
-  {% assign posts = group_items[forloop.index0] %}
-  <h2 id="{{ tag | slugify }}" class="archive__subtitle">{{ tag }}</h2>
-  {% for post in posts %}
-    {% include archive-single.html %}
-  {% endfor %}
-{% endfor %}
+<!-- Get URL hash for active tag -->
+<script>
+  var activeTagFromUrl = window.location.hash.substring(1);
+</script>
+
+<div class="tags-page-container">
+  <!-- Tag Navigation Pills -->
+  <div class="tag-pills-container">
+    <div class="tag-pills-header">
+      <i class="fa fa-tags" aria-hidden="true"></i>
+      <span>Select a Tag</span>
+    </div>
+    <div class="tag-pills-wrapper">
+      {% for tag in group_names %}
+        {% assign posts = group_items[forloop.index0] %}
+        <button class="tag-pill" data-tag="{{ tag | slugify }}" data-count="{{ posts.size }}">
+          <span class="tag-pill-name">{{ tag }}</span>
+          <span class="tag-pill-count">{{ posts.size }}</span>
+        </button>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Posts Display Area -->
+  <div class="tag-posts-display">
+    {% for tag in group_names %}
+      {% assign posts = group_items[forloop.index0] %}
+      <div class="tag-section" id="{{ tag | slugify }}" data-tag="{{ tag | slugify }}">
+        <h2 class="tag-section-title">
+          <i class="fa fa-tag" aria-hidden="true"></i>
+          {{ tag }}
+          <span class="tag-section-count">{{ posts.size }} post{% if posts.size > 1 %}s{% endif %}</span>
+        </h2>
+        
+        <div class="archive archive--tag-cards">
+          {% for post in posts %}
+            <div class="blog-post-card">
+              {% include archive-single.html type="list" %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+.tags-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tag-pills-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tag-pills-header {
+  color: white;
+  font-size: 1.2em;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tag-pills-header i {
+  font-size: 1.3em;
+}
+
+/* Dark theme support */
+html[data-theme="dark"] .tag-pills-container {
+  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+html[data-theme="dark"] .tag-pill {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e0e0e0;
+}
+
+html[data-theme="dark"] .tag-pill:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+html[data-theme="dark"] .tag-pill.active {
+  background: rgba(102, 126, 234, 0.3);
+  border-color: #6da3d8;
+  color: #6da3d8;
+}
+
+html[data-theme="dark"] .tag-pill-count {
+  background: rgba(109, 163, 216, 0.3);
+  color: #6da3d8;
+}
+
+.tag-pills-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag-pill {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid transparent;
+  border-radius: 24px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+  font-weight: 500;
+  color: #667eea;
+}
+
+.tag-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: white;
+}
+
+.tag-pill.active {
+  background: white;
+  border-color: #667eea;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+  transform: scale(1.05);
+}
+
+.tag-pill-name {
+  font-weight: 600;
+}
+
+.tag-pill-count {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 0.85em;
+  font-weight: 700;
+  min-width: 24px;
+  text-align: center;
+}
+
+.tag-section {
+  display: none;
+  animation: fadeInUp 0.5s ease;
+}
+
+.tag-section.active {
+  display: block;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tag-section-title {
+  font-size: 2em;
+  font-weight: 700;
+  color: #667eea;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid #667eea;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.tag-section-count {
+  font-size: 0.6em;
+  color: #888;
+  font-weight: 400;
+  margin-left: auto;
+  transition: color 0.3s ease;
+}
+
+/* Dark theme support for tag section */
+html[data-theme="dark"] .tag-section-title {
+  color: #6da3d8;
+  border-bottom-color: #6da3d8;
+}
+
+html[data-theme="dark"] .tag-section-count {
+  color: #b0b0b0;
+}
+
+.archive--tag-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.blog-post-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-post-card:hover {
+  transform: translateX(8px);
+}
+
+@media (max-width: 768px) {
+  .tag-pills-container {
+    padding: 16px;
+  }
+  
+  .tag-pill {
+    font-size: 0.85em;
+    padding: 6px 12px;
+  }
+  
+  .tag-section-title {
+    font-size: 1.5em;
+    flex-wrap: wrap;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const tagPills = document.querySelectorAll('.tag-pill');
+  const tagSections = document.querySelectorAll('.tag-section');
+  
+  // Get active tag from URL hash or default to first tag
+  let activeTag = activeTagFromUrl || tagPills[0]?.dataset.tag;
+  
+  function showTag(tagSlug) {
+    // Update pills
+    tagPills.forEach(pill => {
+      if (pill.dataset.tag === tagSlug) {
+        pill.classList.add('active');
+      } else {
+        pill.classList.remove('active');
+      }
+    });
+    
+    // Update sections
+    tagSections.forEach(section => {
+      if (section.dataset.tag === tagSlug) {
+        section.classList.add('active');
+      } else {
+        section.classList.remove('active');
+      }
+    });
+    
+    // Update URL hash
+    window.location.hash = tagSlug;
+  }
+  
+  // Initialize with active tag
+  if (activeTag) {
+    showTag(activeTag);
+  }
+  
+  // Add click handlers
+  tagPills.forEach(pill => {
+    pill.addEventListener('click', function() {
+      showTag(this.dataset.tag);
+      // Smooth scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+  
+  // Handle hash changes (back/forward navigation)
+  window.addEventListener('hashchange', function() {
+    const newTag = window.location.hash.substring(1);
+    if (newTag) {
+      showTag(newTag);
+    }
+  });
+});
+</script>

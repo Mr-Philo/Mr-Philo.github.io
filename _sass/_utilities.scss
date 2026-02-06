@@ -284,6 +284,33 @@ body:hover .visually-hidden button {
   }
 }
 
+/* Dark theme support for social icons */
+html[data-theme="dark"] {
+  .social-icons {
+    .fa {
+      color: #e0e0e0;
+    }
+    
+    .fa-github,
+    .fa-github-alt,
+    .fa-github-square {
+      color: #e0e0e0;
+    }
+    
+    .fa-map-marker-alt,
+    .fa-map-marker {
+      color: #6da3d8;
+    }
+  }
+  
+  /* Author profile icons */
+  .author__urls {
+    .fa {
+      color: #e0e0e0;
+    }
+  }
+}
+
 
 /*
    Navicons

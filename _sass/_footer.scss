@@ -90,3 +90,24 @@
     }
   }
 }
+
+/* Dark theme support for footer */
+html[data-theme="dark"] {
+  .page__footer {
+    background-color: #1a1a1a;
+    border-top-color: #3a3a3a;
+    color: #888;
+    
+    a {
+      color: #b0b0b0;
+      
+      &:hover {
+        color: var(--link-color);
+      }
+    }
+    
+    .fas, .fab, .far, .fal {
+      color: #888;
+    }
+  }
+}

@@ -20,13 +20,14 @@ Low-bit data formats are no stranger to most of us. Compared to the default floa
 
 Today, I’d like to share a gentle yet insightful discussion on the application of low-bit data formats in LLM training. We specifically explored the use of **FP4** format in LLM training, identified key challenges, and have compiled our findings into a paper:
 
-> **Optimizing Large Language Model Training Using FP4 Quantization**  
+> 📝 **Optimizing Large Language Model Training Using FP4 Quantization**  
 > [arXiv:2501.17116](https://arxiv.org/abs/2501.17116)
 
-Unlike typical “hardcore” paper analyses, this post aims to walk you through the **motivation**, **key insights**, and **design rationale** behind our work—why we did it, how our methods were conceived, why we chose them, and how we arrived at our results.
+Unlike typical "hardcore" paper analyses, this post aims to walk you through the **motivation**, **key insights**, and **design rationale** behind our work—why we did it, how our methods were conceived, why we chose them, and how we arrived at our results.
 
-- **Paper**: [Optimizing Large Language Model Training Using FP4 Quantization](https://arxiv.org/abs/2501.17116)  
-- **GitHub**: [https://github.com/Azure/MS-AMP](https://github.com/Azure/MS-AMP)
+**Quick Links:**
+- 📝 **Paper**: [Optimizing Large Language Model Training Using FP4 Quantization](https://arxiv.org/abs/2501.17116)  
+- 💻 **GitHub**: [https://github.com/Azure/MS-AMP](https://github.com/Azure/MS-AMP)
 
 ---
 
@@ -72,22 +73,32 @@ $$
 Multiplying the value by a scaling factor is mathematically equivalent to adding or subtracting from the exponent field E . If we use a log₂ scale, this operation can be viewed as a shift along the exponent axis. As illustrated in the figure, the original blue tensor exceeds the representable range of the FP8 format, causing all tensor values below the red line to become zero after quantization. After applying the scaling factor, the entire original tensor is shifted leftward (in the log₂ coordinate system) into the green region, thereby bringing it within the representable range of the FP8 format.
 
 ![Image](/images/posts/2025-07-04-analysis-fp4/low-bit-scaling.png)
+*Figure 2: Visualization of scaling effect in low-bit quantization using log₂ scale. The scaling factor shifts the entire tensor into the representable range.*
 
-For the FP4 format, **scaling is also required**. However, the way we determine the group of tensors to which this scaling is applied differs from that used for FP8. This distinction relates to the granularity of quantization—a rather nuanced and complex topic—which we won’t delve into further here.
+As illustrated:
+- The original **blue** tensor exceeds the representable range of the FP8 format
+- All tensor values below the **red line** become zero after quantization
+- After applying the scaling factor, the entire original tensor is shifted leftward (in the log₂ coordinate system) into the **green region**, bringing it within the representable range However, the way we determine the group of tensors to which this scaling is applied differs from that used for FP8. This distinction relates to the granularity of quantization—a rather nuanced and complex topic—which we won’t delve into further here.
 
 According to the IEEE standard, when all bits of the exponent field (E) are set to 1, the resulting bit pattern does not correspond to a valid finite number. Specifically, if the mantissa (M) is all zeros in this case, it represents infinity (Inf); if the mantissa contains any non-zero bits, it represents a NaN (Not a Number). However, due to the extremely limited bit width of FP8 and FP4 formats, this IEEE rule is typically ignored, as the primary goal becomes maximizing the representation of meaningful numerical values. **For instance, the FP8 (E4M3) format does not define Inf, and FP6 and FP4 formats omit both Inf and NaN entirely.**
 
 For a detailed numerical specification of FP4, please refer to the accompanying table and figure. Since FP4 can represent only 16 distinct finite values, we have enumerated all of them explicitly. As shown, one bit in FP4 is already reserved for the sign. Among the remaining three bits, allocating more bits to the exponent (E) increases the dynamic range, while allocating more bits to the mantissa (M) yields finer quantization granularity. To strike a practical balance between dynamic range and precision, **we adopt the E2M1 format for FP4.**
 
 ![Image](/images/posts/2025-07-04-analysis-fp4/fp4_formats.png)
+*Figure 3: FP4 format specifications. E2M1 provides optimal balance between range and precision, with all 16 representable values explicitly shown.*
 
 ---
-
 ## Methodology
 
-In practical training, to fully leverage the computational efficiency of Tensor Cores, **both input tensors** of a matrix multiplication—the **weight tensor W** and the **activation tensor A** —must be quantized to a low-precision format before performing the forward matrix multiplication. However, as previously discussed, directly quantizing these tensors to FP4 would lead to severe accuracy degradation. To address this, we have developed two distinct strategies: one focused on preserving the precision of quantized weights W , and the other on maintaining the fidelity of quantized activations A . 
+In practical training, to fully leverage the computational efficiency of Tensor Cores, **both input tensors** of a matrix multiplication must be quantized to a low-precision format before performing the forward matrix multiplication:
 
-Specifically, we propose (1) a differentiable gradient estimator (DGE) to enable more accurate weight updates, and (2) an outlier clamping and compensation method to reduce quantization error in activations A .
+- 📦 **Weight tensor `W`**
+- 💡 **Activation tensor `A`**
+
+However, as previously discussed, directly quantizing these tensors to FP4 would lead to **severe accuracy degradation**. To address this, we have developed **two distinct strategies**:
+
+1. 🎯 **Differentiable Gradient Estimator (DGE)** → preserving weight precision
+2. ✂️ **Outlier Clamping and Compensation (OCC)** → maintaining activation fidelity
 
 ### 1. Differentiable Gradient Estimator (DGE)
 
@@ -145,11 +156,12 @@ Therefore, we ask: *Can we mitigate this error?* Returning to the core formula, 
 In essence, $ f'(W) $ acts as a **calibration term** for the weight gradients, enabling more precise weight updates during training!
 
 ![Image DGE](/images/posts/2025-07-04-analysis-fp4/DGE-function.png)
+*Figure 4: Comparison of quantization functions and their derivatives*
 
-> Referring to the figure:
-> - The **blue** line represents the original non-differentiable quantization function (Hard)
-> - The **red** line shows our (DGE) proposed approach of approximating this quantization function using a steep yet differentiable function. 
-> - For comparison purposes, we have also plotted the assumption under Straight-Through Gradient Estimation (STE), where y=x.
+**Legend:**
+- 🔵 **Blue line**: Original non-differentiable quantization function (Hard)
+- 🔴 **Red line**: Our DGE approach – approximating quantization using a steep yet differentiable function  
+- ⚫ **Black dashed line**: STE assumption (y=x) for comparison
 
 With this insight in place, the next steps become clear. We select a shifted and scaled power function to approximate the quantization function and use its derivative as the crucial gradient calibration term $ f'(W) $. The function we adopt is defined as:
 
@@ -169,29 +181,40 @@ In practice, during the forward pass, we directly quantize the weights $ W $. Du
 
 For a detailed derivation of these two formulas and further technical nuances, please refer to Section 3.1 and Appendix C of the original paper—here we omit the full derivation for brevity.
 
-We conducted ablation studies on the 1.3B LLaMA-2 model to validate the effectiveness of the Differentiable Gradient Estimator (DGE). In the notation **W4A8**, weights $ W $ are quantized to 4 bits while activations $ A $ remain at 8 bits—effectively a *weight-only quantization* setting. As shown in the convergence curves, incorporating the DGE correction term significantly improves training convergence compared to the gray-blue baseline (without DGE).  
+We conducted ablation studies on the **1.3B LLaMA-2** model to validate the effectiveness of the Differentiable Gradient Estimator (DGE). In the notation **W4A8**, weights `W` are quantized to **4 bits** while activations `A` remain at **8 bits**—effectively a *weight-only quantization* setting. As shown in the convergence curves, incorporating the DGE correction term significantly improves training convergence compared to the gray-blue baseline (without DGE).  
 
-Regarding the hyperparameter $ k $: larger values better approximate the true quantization function but can lead to instability in the gradient correction term. Empirically, a moderate value of $ k = 5 $ yields the best final performance, as illustrated by the green curve.
+Regarding the hyperparameter `k`: larger values better approximate the true quantization function but can lead to instability in the gradient correction term. Empirically, a moderate value of **k = 5** yields the best final performance, as illustrated by the green curve.
 
 ![Image](/images/posts/2025-07-04-analysis-fp4/DGE-ablation.png)
+*Figure 5: DGE ablation study on LLaMA-1.3B. The green curve (k=5) shows optimal convergence.*
 
 ---
-
 ### 2. Outlier Clamping and Compensation (OCC)
 
-Next, we turn to the quantization strategy for activation values $ A $.  
+Next, we turn to the quantization strategy for activation values `A`.  
 
-During training or inference of large language models (LLMs), activation values—i.e., intermediate outputs from operators such as attention or MLP layers—are significantly harder to quantize than model weights. A key reason for this difficulty is the prevalence of **outliers** in activations.  
+#### The Outlier Problem
 
-To clarify, consider an activation tensor of shape, for example, $1024 \times 4096$. If we treat all its elements as samples from a distribution, **outliers** refer to those values whose magnitudes are substantially larger than the typical (e.g., mean or median) values in that distribution. (For a detailed comparison between the statistical distributions of weights and activations, please refer to Appendix D of the original paper.)
+During training or inference of large language models (LLMs), **activation values**—i.e., intermediate outputs from operators such as attention or MLP layers—are **significantly harder to quantize than model weights**. A key reason for this difficulty is the prevalence of **outliers** in activations.  
 
-Numerous quantization studies have systematically investigated the characteristics of outliers in LLM activations. A widely observed conclusion is that **outliers are extremely common in LLM activations**—they appear consistently across virtually all large language models during both training and inference. Moreover, these outliers tend to concentrate along specific **channel dimensions** (i.e., feature or hidden dimensions), rather than along the orthogonal **token dimension** (sequence or batch dimension). This phenomenon is known as **channel-wise outlier distribution**.  
+To clarify, consider an activation tensor of shape, for example, `1024 × 4096`. If we treat all its elements as samples from a distribution, **outliers** refer to those values whose magnitudes are substantially larger than the typical (e.g., mean or median) values in that distribution.
+
+> 📈 For a detailed comparison between the statistical distributions of weights and activations, please refer to Appendix D of the original paper.
+
+Numerous quantization studies have systematically investigated the characteristics of outliers in LLM activations. Key findings:
+
+- ⚠️ **Outliers are extremely common** in LLM activations
+- 🔄 They appear consistently across virtually all large language models during both training and inference
+- 📉 These outliers tend to concentrate along specific **channel dimensions** (feature/hidden dimensions)
+- ❌ Rather than along the orthogonal **token dimension** (sequence/batch dimension)
+- 🎯 This phenomenon is known as **channel-wise outlier distribution**  
 
 Our experiments confirm this observation, as illustrated in the figure below:
 
 ![Image](/images/posts/2025-07-04-analysis-fp4/heatmap-visualizaiton.png)
+*Figure 6: Heatmap of GeLU output activations from LLaMA-1.3B (iteration 30k). Light regions show outliers concentrated along specific hidden dimensions, demonstrating clear channel-wise pattern.*
 
-> The figure shows a heatmap of the output activations from the GeLU function in the first Transformer layer of the LLaMA-1.3B model at training iteration 30,000. It is evident that all extremely large values (light-colored regions) are concentrated along certain specific hidden dimensions—demonstrating a clear **channel-wise** pattern—while their distribution across the sequence × batch dimensions appears relatively uniform.
+**Observation:** All extremely large values (light-colored regions) are concentrated along certain specific hidden dimensions—demonstrating a clear **channel-wise** pattern—while their distribution across the sequence × batch dimensions appears relatively uniform.
 
 Unfortunately, the presence of such outliers is **catastrophic for quantization**. As previously described, in max-abs quantization, the scaling factor is computed based on the maximum absolute value in the original tensor and the largest representable value in the target format (e.g., FP4). When outliers are present, this maximum value is dominated by a few extreme entries that do **not** reflect the magnitude of the vast majority of values in the tensor. Consequently, the computed scaling factor becomes excessively large, causing most of the non-outlier values to be scaled down so much that they collapse to zero after quantization—rendering them effectively unrepresentable.
 
@@ -204,50 +227,63 @@ As shown in the figure below:
 Thus, outlier clamping strikes a practical trade-off: sacrificing a tiny fraction of extreme values to preserve the fidelity of the dominant signal in the activation tensor.
 
 ![Image](/images/posts/2025-07-04-analysis-fp4/OCC-visualization.png)
+*Figure 7: Comparison of quantization results with and without outlier clamping*
 
-> **Top:** Without outlier clamping, much of the original tensor’s distributional information is lost.
-> **Bottom:** With outlier clamping, quantization error is dramatically reduced.
+**Analysis:**
+- ❌ **Top (Without clamping)**: The quantization function is heavily skewed by outliers. After FP4 quantization, the resulting values completely lose the original distribution, with a large portion quantized to zero—introducing severe quantization error.
+- ✅ **Bottom (With clamping)**: Although the information from the top 1% extreme outliers is lost, the vast majority (~99%) of the tensor's distribution is preserved, leading to much more faithful representation and significantly reduced quantization error.
 
-**Top**: Without outlier clamping, much of the original tensor’s distributional information is lost.  
-**Bottom**: With outlier clamping, quantization error is dramatically reduced.  
-
-These results are derived from quantizing the output activations of the first Transformer layer in the 1.3B LLaMA model at training iteration 30,000.
+> 🎯 **Trade-off**: Sacrificing a tiny fraction of extreme values to preserve the fidelity of the dominant signal.
 
 In addition to outlier clamping, we observe that the clipped outliers themselves still exert a non-negligible impact on final quantization accuracy. To further mitigate quantization error, we propose a **high-precision compensation strategy** to account for the influence of these removed outliers. The detailed procedure is illustrated in the figure below.
 
 Because we use a high percentile threshold (e.g., 99th), clamping affects only a very small fraction of extreme values. In other words, if we decompose the original activation tensor as $Y = Y_c + \Delta Y$, where $Y_c$ represents the main body of the tensor (which will be quantized to low precision, e.g., FP4) and $\Delta Y$ contains the outliers, then $\Delta Y$ is **highly sparse**. This sparsity allows us to compensate for the missing information with minimal computational overhead: although the compensation uses higher precision (e.g., FP8), the associated matrix multiplication can be accelerated using **sparse matrix multiplication techniques**.
 
 ![Image](/images/posts/2025-07-04-analysis-fp4/OCC-visualization-2.png)
+*Figure 8: Outlier clamping and compensation strategy. The sparse compensation matrix ΔY enables high-precision correction with minimal overhead.*
 
-> **Illustration of the outlier clamping and compensation strategy**: The core idea involves (1) extracting the sparse outlier compensation matrix $\Delta Y$ and (2) applying high-precision sparse matrix multiplication for the subsequent computation.
+**Key insight:** Because we use a high percentile threshold (e.g., 99th), clamping affects only a very small fraction of extreme values. If we decompose the original activation tensor as `Y = Y_c + ΔY`:
 
-We also provide a quantitative analysis of this approach. The evaluation metrics are averaged over all activation matrices from the 1.3B LLaMA model at training iteration 30,000. The results show that:
-- Outlier clamping **significantly improves cosine similarity** and **signal-to-noise ratio (SNR)**, while **reducing mean squared error (MSE)** between the original and quantized tensors.
-- Introducing the outlier compensation mechanism **further reduces quantization error**.
+- `Y_c` = main body (quantized to low precision, e.g., FP4)
+- `ΔY` = outliers (highly **sparse**)
 
-Notably, **lowering the clamping percentile** (e.g., from 99% to 95%) reduces the sparsity of the compensation matrix—i.e., it expands the set of values treated as outliers—thereby further decreasing quantization error. However, this comes at the cost of increased computational overhead for compensation, since a denser $\Delta Y$ requires more FLOPs in the sparse FP8 multiply. This presents a classic **trade-off between computational efficiency and numerical accuracy**.
+This sparsity allows us to compensate for missing information with minimal computational overhead: although compensation uses higher precision (e.g., FP8), the associated matrix multiplication can be accelerated using **sparse matrix multiplication techniques**.
 
-**Quantitative results (LLaMA-1.3B, iteration 30k)**:
+We also provide a quantitative analysis of this approach. The evaluation metrics are averaged over all activation matrices from the **1.3B LLaMA** model at training iteration **30,000**.
+
+**Quantitative Results:**
 
 | Clamp? | Comp? | Quantile | Cosine Sim ↑ | MSE ↓ | SNR ↑ |
 |--------|--------|----------|---------------|--------|--------|
 | ✗      | —      | —        | 92.19%        | 0.1055 | 8.31   |
 | ✓      | ✗      | 99.9     | 98.83%        | 0.0366 | 14.25  |
 | ✓      | ✓      | 99.9     | 99.61%        | 0.0245 | 15.31  |
-| ✓      | ✓      | 99       | 100%          | 0.0099 | 18.38  |
-| ✓      | ✓      | 97       | 100%          | 0.0068 | 20.88  |
+| ✓      | ✓      | 99       | **100%**      | **0.0099** | **18.38**  |
+| ✓      | ✓      | 97       | **100%**      | **0.0068** | **20.88**  |
 
-We conducted ablation studies on the 1.3B LLaMA-2 model to validate the effectiveness of our **Outlier Clamping and Compensation (OCC)** scheme. In the notation **W8A4**, weights $W$ are quantized to 8 bits while activations $A$ are quantized to 4 bits—effectively an *activation-only quantization* setting.
+**Key findings:**
+- ✅ Outlier clamping **significantly improves cosine similarity** and **signal-to-noise ratio (SNR)**
+- ✅ **Reduces mean squared error (MSE)** between original and quantized tensors
+- ✅ Introducing compensation mechanism **further reduces quantization error**
 
-As shown in the training curves, directly quantizing activations to FP4 leads to **training divergence**: after a certain number of training steps, the loss spikes and becomes **NaN** (Not a Number), indicating numerical instability. In contrast, applying outlier clamping together with compensation **effectively closes this loss gap** and ensures stable, well-behaved convergence. This experiment once again underscores the critical importance of properly handling outliers within the absmax quantization framework.
+> ⚖️ **Trade-off**: Lowering the clamping percentile (e.g., from 99% to 95%) reduces sparsity of the compensation matrix—expanding the set of outliers—thereby further decreasing quantization error. However, this comes at the cost of increased computational overhead for compensation.
 
-The method includes a hyperparameter $ \alpha $, which denotes the clamping percentile (e.g., $ \alpha = 0.99 $ means clamping at the 99th percentile). A **smaller $ \alpha $** implies a **stronger compensation effect**—since more values are treated as outliers and compensated in high precision—but also incurs **higher computational cost** due to reduced sparsity.
-
-In the figure, the light blue, green, and orange curves correspond to $ \alpha = 0.999 $, $ 0.99 $, and $ 0.97 $, respectively. These settings yield sparse compensation matrices with non-zero element ratios of approximately **0.2%**, **2%**, and **6%**.  
-
-While the results confirm that a smaller $ \alpha $ improves model accuracy—consistent with the quantitative findings in the earlier table—we argue that, when considering the trade-off with computational efficiency, **$ \alpha = 0.99 $** offers the best practical balance between accuracy and speed.
+We conducted ablation studies on the **1.3B LLaMA-2** model to validate the effectiveness of our **Outlier Clamping and Compensation (OCC)** scheme. In the notation **W8A4**, weights `W` are quantized to **8 bits** while activations `A` are quantized to **4 bits**—effectively an *activation-only quantization* setting.
 
 ![Image](/images/posts/2025-07-04-analysis-fp4/OCC-ablation.png)
+*Figure 9: OCC ablation study showing stable convergence with different α values*
+
+**Key observations:**
+- ❌ **Without OCC**: Directly quantizing activations to FP4 leads to **training divergence**—after a certain number of training steps, the loss spikes and becomes **NaN**
+- ✅ **With OCC**: Outlier clamping together with compensation **effectively closes this loss gap** and ensures stable convergence
+
+**Hyperparameter α (clamping percentile):**
+- Smaller α → stronger compensation effect (more outliers treated) → **higher accuracy** but **higher computational cost**
+- **α = 0.999** → ~0.2% non-zero elements (light blue curve)
+- **α = 0.99** → ~2% non-zero elements (green curve) 
+- **α = 0.97** → ~6% non-zero elements (orange curve)
+
+> 🎯 **Optimal trade-off**: Considering both accuracy and speed, **α = 0.99** offers the best practical balance.
 
 ---
 

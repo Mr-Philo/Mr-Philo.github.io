@@ -1,6 +1,30 @@
 /* ==========================================================================
    BASE ELEMENTS
    ========================================================================== */
+
+/* Dark Theme Variables */
+html[data-theme="dark"] {
+  --background-color: #1a1a1a;
+  --text-color: #e0e0e0;
+  --code-background-color: #2d2d2d;
+  --border-color: #3a3a3a;
+  --masthead-background: #242424;
+  --card-background: #242424;
+  --link-color: #6da3d8;
+  --primary-color: #9ca3af;
+}
+
+html[data-theme="light"] {
+  --background-color: #fff;
+  --text-color: #494e52;
+  --code-background-color: #fafafa;
+  --border-color: #f2f3f3;
+  --masthead-background: white;
+  --card-background: white;
+  --link-color: #224b8d;
+  --primary-color: #7a8288;
+}
+
 html {
   /* sticky footer fix */
   position: relative;
@@ -14,6 +38,9 @@ body {
   color: $text-color;
   font-family: $global-font-family;
   line-height: 1.5;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 
   &.overflow--hidden {
     /* when primary navigation is visible, the content in the background won't scroll */
@@ -319,4 +346,46 @@ nav {
 b, i, strong, em, blockquote, p, q, span, figure, img, h1, h2, header, input, a, tr, td, form button, input[type="submit"], .btn, .highlight, .archive__item-teaser {
   -webkit-transition: $global-transition;
   transition: $global-transition;
+}
+
+/*
+   Dark theme additional styles
+   ========================================================================== */
+
+html[data-theme="dark"] {
+  a {
+    color: var(--link-color);
+    
+    &:visited {
+      color: mix(#fff, #6da3d8, 25%);
+    }
+    
+    &:hover {
+      color: lighten(#6da3d8, 10%);
+    }
+  }
+  
+  code {
+    background: var(--code-background-color);
+    border-color: var(--border-color);
+    color: #e0e0e0;
+  }
+  
+  hr {
+    border-top-color: var(--border-color);
+  }
+  
+  blockquote {
+    border-left-color: var(--primary-color);
+    color: #b0b0b0;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text-color);
+  }
+  
+  .page__footer {
+    background-color: #1a1a1a;
+    color: #888;
+  }
 }

@@ -228,7 +228,7 @@ I’m looking to collaborate on inspirable companions. You can find more info re
 
 <div class="blog-meta">
 <span><i class="fa fa-calendar"></i> May 30, 2025</span>
-<span><i class="fa fa-clock"></i> 15 min read</span>
+<span><i class="fa fa-clock"></i> 29 min read</span>
 </div>
 
 <p class="blog-excerpt">Detailed Paper Interpretation of "Optimizing Large Language Model Training Using FP4 Quantization". This post walks you through the motivation, key insights, and design rationale behind our work.</p>
@@ -246,7 +246,7 @@ I’m looking to collaborate on inspirable companions. You can find more info re
 
 <div class="blog-meta">
 <span><i class="fa fa-calendar"></i> Aug 3, 2025</span>
-<span><i class="fa fa-clock"></i> 20 min read</span>
+<span><i class="fa fa-clock"></i> 27 min read</span>
 </div>
 
 <p class="blog-excerpt">A comprehensive overview of Quantization Scaling Laws. Dive deep into 5 papers to understand how performance loss from quantization varies with model parameters and token count.</p>
@@ -264,7 +264,7 @@ I’m looking to collaborate on inspirable companions. You can find more info re
 
 <div class="blog-meta">
 <span><i class="fa fa-calendar"></i> Oct 10, 2025</span>
-<span><i class="fa fa-clock"></i> 10 min read</span>
+<span><i class="fa fa-clock"></i> 16 min read</span>
 </div>
 
 <p class="blog-excerpt">Why we must use Megatron-LM for large model training, and some warnings for those who have never used it before. A practical guide from personal experience.</p>

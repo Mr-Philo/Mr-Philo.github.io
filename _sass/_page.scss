@@ -410,3 +410,37 @@
   font-size: $type-size-6;
   text-transform: uppercase;
 }
+
+/* Dark theme support for page content */
+html[data-theme="dark"] {
+  .page__content {
+    h1 {
+      border-bottom-color: var(--border-color);
+      color: var(--text-color);
+    }
+    
+    h2, h3, h4, h5, h6 {
+      color: var(--text-color);
+    }
+    
+    p, li, dl, dt, dd {
+      color: var(--text-color);
+    }
+    
+    a {
+      color: var(--link-color);
+      
+      &:visited {
+        color: mix(#fff, #6da3d8, 25%);
+      }
+      
+      &:hover {
+        color: lighten(#6da3d8, 10%);
+      }
+    }
+  }
+  
+  .page__related {
+    border-top-color: var(--border-color);
+  }
+}

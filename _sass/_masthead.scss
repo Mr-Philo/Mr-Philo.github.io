@@ -12,6 +12,9 @@
   -webkit-animation-delay: 0.15s;
           animation-delay: 0.15s;
   z-index: 20;
+  background-color: var(--masthead-background);
+  border-bottom-color: var(--border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 
   &__inner-wrap {
     @include container;
@@ -58,6 +61,46 @@
   &--lg {
     padding-right: 2em;
     font-weight: 700;
+  }
+  
+  a {
+    transition: all 0.3s ease;
+    position: relative;
+    
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+// Theme toggle icon styling
+#theme-toggle {
+  a {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    
+    i {
+      font-size: 1.1em;
+      transition: transform 0.3s ease;
+      display: inline-block;
+      width: 1em;
+      text-align: center;
+      
+      // Fallback if icon doesn't load
+      &:before {
+        display: inline-block;
+      }
+      
+      &:empty:after {
+        content: "☀";
+        font-style: normal;
+      }
+    }
+    
+    &:hover i {
+      transform: rotate(20deg);
+    }
   }
 }
 

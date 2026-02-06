@@ -176,6 +176,8 @@
   position: relative;
   min-width: 250px;
   background: $background-color;
+  background-color: var(--masthead-background);
+  transition: background-color 0.3s ease;
 
   a {
     display: block;
@@ -183,9 +185,13 @@
     padding: 0.5rem 0;
     color: $masthead-link-color;
     text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 500;
+    color: var(--text-color);
 
     &:hover {
       color: $masthead-link-color-hover;
+      color: var(--link-color);
     }
   }
 
@@ -207,6 +213,7 @@
     li {
       display: table-cell;
       vertical-align: middle;
+      position: relative;
 
       &:first-child {
         font-weight: bold;
@@ -221,6 +228,18 @@
           margin-right: 0;
         }
       }
+      
+      // Subtle separator between menu items (except first and theme toggle)
+      &:not(:first-child):not(:last-child):after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 60%;
+        width: 1px;
+        background: rgba(0, 0, 0, 0.1);
+      }
     }
 
     a {
@@ -231,14 +250,15 @@
         position: absolute;
         left: 0;
         bottom: 0;
-        height: 4px;
-        background: mix(#fff, $primary-color, 50%);
+        height: 3px;
+        background: linear-gradient(90deg, $primary-color, mix(#fff, $primary-color, 30%));
         width: 100%;
         -webkit-transition: $global-transition;
         transition: $global-transition;
         -webkit-transform: scaleX(0);
             -ms-transform: scaleX(0);
                 transform: scaleX(0); /* hide*/
+        border-radius: 2px;
       }
 
       &:hover:before {
@@ -427,6 +447,67 @@
 
     @include breakpoint($medium) {
       display: block;
+    }
+  }
+}
+
+/* Dark theme support for navigation */
+html[data-theme="dark"] {
+  .greedy-nav {
+    .hidden-links {
+      background: #2a2a2a;
+      border-color: #3a3a3a;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      
+      a {
+        color: var(--text-color);
+        
+        &:hover {
+          color: var(--link-color);
+          background: rgba(74, 144, 226, 0.2);
+        }
+      }
+      
+      &:before {
+        border-color: #3a3a3a transparent;
+      }
+      
+      &:after {
+        border-color: #2a2a2a transparent;
+      }
+      
+      li {
+        border-bottom-color: #3a3a3a;
+      }
+    }
+    
+    button {
+      background-color: #4a5568;
+    }
+  }
+  
+  .breadcrumbs {
+    a {
+      color: var(--link-color);
+      
+      &:hover {
+        color: lighten(#6da3d8, 10%);
+      }
+    }
+  }
+  
+  .pagination {
+    li a {
+      color: #b0b0b0;
+      border-color: #3a3a3a;
+      
+      &:hover {
+        color: var(--link-color);
+      }
+      
+      &.current {
+        background: #4a5568;
+      }
     }
   }
 }

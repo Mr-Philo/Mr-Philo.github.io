@@ -48,6 +48,7 @@
     flex-wrap: wrap;
     border-bottom: 1px #efefef solid;
     padding: 2em 0 2em 0;
+    transition: border-color 0.3s ease;
     
 
     .paper-box-image{
@@ -385,11 +386,13 @@ h1:before, .anchor:before {
         font-size: 1em;
         line-height: 1.8;
         color: #2d3436;
+        transition: color 0.3s ease;
         
         a {
             color: #667eea;
             text-decoration: none;
             font-weight: 500;
+            transition: color 0.3s ease;
             
             &:hover {
                 color: #764ba2;
@@ -405,6 +408,7 @@ h1:before, .anchor:before {
         border-radius: 4px;
         font-weight: 600;
         color: #667eea;
+        transition: background 0.3s ease, color 0.3s ease;
     }
 }
 
@@ -424,10 +428,12 @@ h1:before, .anchor:before {
         font-size: 0.85em;
         font-weight: 500;
         color: #555;
+        transition: all 0.3s ease;
         
         i {
             margin-right: 0.4em;
             color: #667eea;
+            transition: color 0.3s ease;
         }
     }
 }
@@ -645,13 +651,325 @@ h1:before, .anchor:before {
     align-items: center;
     gap: 0.5em;
     margin-bottom: 1em;
+    transition: color 0.3s ease;
     
     .section-icon {
         font-size: 1.3em;
+        transition: color 0.3s ease;
     }
     
     h1 {
         margin: 0;
         font-size: 1.4em;
+        transition: color 0.3s ease;
+    }
+}
+
+/* ============================================
+   Dark Theme Support - Complete Coverage
+   ============================================ */
+
+html[data-theme="dark"] {
+    /* Paper boxes and publication cards */
+    .paper-box {
+        border-bottom-color: var(--border-color);
+        
+        .paper-box-image img {
+            box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+        }
+    }
+    
+    .badge {
+        background-color: #4a90e2;
+    }
+    
+    /* Blog boxes */
+    .blog-box {
+        background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+        border-color: #3a3a3a;
+        border-left-color: #4a90e2;
+        
+        &:hover {
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
+        }
+        
+        .blog-box-image img {
+            box-shadow: 3px 3px 10px rgba(74, 144, 226, 0.3);
+        }
+        
+        .blog-box-text {
+            h3 a {
+                color: var(--text-color);
+                
+                &:hover {
+                    color: #4a90e2;
+                }
+            }
+            
+            .blog-meta {
+                color: #888;
+                
+                i {
+                    color: #4a90e2;
+                }
+            }
+            
+            .blog-excerpt {
+                color: #b0b0b0;
+                background-color: rgba(74, 144, 226, 0.1);
+            }
+            
+            .blog-tags {
+                .tag {
+                    background-color: rgba(74, 144, 226, 0.2);
+                    color: #6da3d8;
+                }
+            }
+        }
+    }
+    
+    /* About page custom styles */
+    .about-intro {
+        p {
+            color: var(--text-color);
+            
+            a {
+                color: #a29bfe;
+                
+                &:hover {
+                    color: #b8b0ff;
+                }
+            }
+        }
+        
+        .intro-highlight {
+            color: #6da3d8;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.15) 0%, rgba(108, 92, 231, 0.15) 100%);
+        }
+    }
+    
+    .research-interests {
+        .interest-tag {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: #e0e0e0;
+            border-color: #555;
+        }
+    }
+    
+    /* Timeline styles */
+    .timeline {
+        border-left-color: #444;
+    }
+    
+    .timeline-item {
+        background: transparent;
+        
+        &::before {
+            background: #4a90e2;
+            border-color: #1a1a1a;
+        }
+    }
+    
+    .timeline-date {
+        background: linear-gradient(135deg, rgba(74, 144, 226, 0.2) 0%, rgba(108, 92, 231, 0.2) 100%);
+        color: #6da3d8;
+    }
+    
+    .timeline-title {
+        color: #e0e0e0;
+    }
+    
+    .timeline-subtitle {
+        color: #b0b0b0;
+    }
+    
+    .timeline-location {
+        color: #888;
+        
+        i {
+            color: #6da3d8;
+        }
+    }
+    
+    /* Award cards */
+    .award-card {
+        background: linear-gradient(135deg, rgba(241, 196, 15, 0.15) 0%, rgba(243, 156, 18, 0.15) 100%);
+        border-color: rgba(241, 196, 15, 0.3);
+        border-left-color: #f1c40f;
+        
+        &:hover {
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+        }
+    }
+    
+    .award-year {
+        color: #f1c40f;
+        background: rgba(241, 196, 15, 0.25);
+    }
+    
+    .award-title {
+        color: #e0e0e0;
+    }
+    
+    /* Internship cards */
+    .internship-card {
+        background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(139, 195, 74, 0.15) 100%);
+        border-color: rgba(76, 175, 80, 0.3);
+        border-left-color: #4caf50;
+        
+        .internship-logo {
+            background: #2a2a2a;
+            
+            i {
+                color: #4caf50;
+            }
+        }
+        
+        .internship-content {
+            .internship-company {
+                color: #e0e0e0;
+                
+                a {
+                    color: inherit;
+                    
+                    &:hover {
+                        color: #4caf50;
+                    }
+                }
+            }
+            
+            .internship-role {
+                color: #b0b0b0;
+            }
+            
+            .internship-meta {
+                color: #888;
+                
+                i {
+                    color: #4caf50;
+                }
+            }
+        }
+    }
+    
+    /* Sidebar author info */
+    .author__name {
+        color: var(--text-color);
+    }
+    
+    .author__bio {
+        color: #b0b0b0;
+    }
+    
+    .author__urls {
+        li a {
+            color: var(--text-color);
+            
+            &:hover {
+                color: var(--link-color);
+            }
+        }
+    }
+    
+    /* Navigation button for mobile */
+    .greedy-nav button {
+        background-color: #4a5568;
+    }
+    
+    /* Page content */
+    .page__content {
+        color: var(--text-color);
+        
+        p, li, td, th {
+            color: var(--text-color);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color);
+        }
+    }
+    
+    /* Tables */
+    table {
+        border-color: var(--border-color);
+        
+        th, td {
+            border-color: var(--border-color);
+            color: var(--text-color);
+        }
+        
+        thead {
+            background: #2a2a2a;
+        }
+        
+        tbody tr {
+            background: #1f1f1f;
+            
+            &:nth-child(even) {
+                background: #242424;
+            }
+        }
+    }
+    
+    /* Notices and alerts */
+    .notice {
+        background: #2a2a2a;
+        border-color: #3a3a3a;
+        color: var(--text-color);
+    }
+    
+    /* Publication boxes (pub-box) */
+    .pub-box {
+        background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+        border-color: #3a3a3a;
+        border-left-color: #6c5ce7;
+        
+        &:hover {
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
+        }
+        
+        .pub-box-image img {
+            box-shadow: 3px 3px 10px rgba(108, 92, 231, 0.3);
+        }
+        
+        .pub-box-text {
+            h3 a {
+                color: var(--text-color);
+                
+                &:hover {
+                    color: #a29bfe;
+                }
+            }
+            
+            .pub-authors {
+                color: #b0b0b0;
+            }
+            
+            .pub-meta {
+                color: #888;
+                
+                i {
+                    color: #a29bfe;
+                }
+            }
+            
+            .pub-excerpt {
+                color: #b0b0b0;
+                background-color: rgba(108, 92, 231, 0.1);
+            }
+        }
+    }
+    
+    /* Section headers */
+    .section-header {
+        color: var(--text-color);
+        
+        .section-icon {
+            color: var(--link-color);
+        }
+        
+        h1 {
+            color: var(--text-color);
+        }
     }
 }
