@@ -90,17 +90,18 @@ I’m looking to collaborate on inspirable companions. You can find more info re
 
 <div class='pub-box'>
 <div class='pub-box-image'>
+<div class="pub-venue">ICML 2026</div>
 <a href="https://arxiv.org/abs/2510.08008"><img src='images/publications/recycle-frame.png' alt="Recycling Checkpoints"></a>
 </div>
 <div class='pub-box-text' markdown="1">
 
-### [Recycling Pretrained Checkpoints: Orthogonal Growth of MoE for Efficient LLM Pre-Training](https://arxiv.org/abs/2510.08008)
+### [Beyond Sunk Costs: Boosting LLM Pre-training Efficiency via Orthogonal Growth of Mixture-of-Experts](https://arxiv.org/abs/2510.08008)
 
 <p class="pub-authors"><strong>Ruizhe Wang</strong>, Yucheng Ding, Xiao Liu, Yaoxiang Wang, Peng Cheng, Baining Guo, Zhengjun Zha, Yeyun Gong</p>
 
 <div class="pub-meta">
 <span><i class="fa fa-calendar"></i> Oct 2025</span>
-<span><i class="fa fa-file-alt"></i> Preprint</span>
+<span><i class="fa fa-file-alt"></i> ICML 2026</span>
 </div>
 
 <p class="pub-excerpt">We propose a "checkpoint recycling" strategy that expands existing models through orthogonal growth on 70B MoE models with 1T training tokens, delivering a 10.6% accuracy improvement over training from scratch while significantly maximizing the value of prior computational investments.</p>
@@ -112,7 +113,7 @@ I’m looking to collaborate on inspirable companions. You can find more info re
 </div>
 </div>
 
-<div class='pub-box'>
+<!-- <div class='pub-box'>
 <div class='pub-box-image'>
 <a href="https://arxiv.org/abs/2509.26520"><img src='images/publications/Matryoshka-frame.png' alt="Matryoshka MoE"></a>
 </div>
@@ -134,7 +135,7 @@ I’m looking to collaborate on inspirable companions. You can find more info re
 </div>
 
 </div>
-</div>
+</div> -->
 
 
 # 📝 Technical Reports 
