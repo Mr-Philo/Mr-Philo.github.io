@@ -108,6 +108,7 @@ I’m looking to collaborate on inspirable companions. You can find more info re
 
 <div class="pub-links">
 <a href="https://arxiv.org/abs/2510.08008"><img src="https://img.shields.io/badge/arXiv-2510.08008-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white"></a>
+<a href="https://github.com/Mr-Philo/Orthogonal-Model-Growth"><img src="https://img.shields.io/badge/GitHub-Code-100000?style=for-the-badge&logo=github&logoColor=white"></a>
 </div>
 
 </div>
@@ -220,6 +221,24 @@ I’m looking to collaborate on inspirable companions. You can find more info re
 # 🦈 Blogs
 
 > 📚 View full blogs page: [All Blog Posts](/blog-posts/)
+
+<div class='blog-box'>
+<div class='blog-box-image'><a href="/posts/2026/07/analysis-moe-orthogonal-growth/"><img src='images/publications/recycle-frame.png' alt="Orthogonal Growth of MoE"></a></div>
+<div class='blog-box-text' markdown="1">
+
+### [Stop Wasting Your Pre-trained Checkpoints: Orthogonal Growth Saves You 10%+ Compute](/posts/2026/07/analysis-moe-orthogonal-growth/)
+
+<div class="blog-meta">
+<span><i class="fa fa-calendar"></i> Jul 1, 2026</span>
+<span><i class="fa fa-clock"></i> 35 min read</span>
+</div>
+
+<p class="blog-excerpt">Detailed paper interpretation of "Beyond Sunk Costs: Boosting LLM Pre-training Efficiency via Orthogonal Growth of Mixture-of-Experts" (ICML 2026). This post walks you through the motivation, key insights, and design rationale behind checkpoint recycling for MoE models.</p>
+
+<div class="blog-tags"><span class="tag">Model Growth</span><span class="tag">Paper Interpretation</span></div>
+
+</div>
+</div>
 
 <div class='blog-box'>
 <div class='blog-box-image'><a href="/posts/2025/05/analysis-fp4/"><img src='images/publications/fp4_frame_thin.png' alt="FP4 Quantization"></a></div>
